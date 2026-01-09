@@ -1,0 +1,1357 @@
+<html class="dark">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Digitization Studios</title>
+    <link rel="shortcut icon" href="/favicon.svg?v=1" type="image/svg+xml">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://unpkg.com/@splinetool/viewer@1.9.59/build/spline-viewer.js" type="module"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#6c2bee",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#161022",
+                        "accent-pink": "#d946ef",
+                        "accent-cyan": "#22d3ee"
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px" },
+                    backgroundImage: {
+                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.05%22/%3E%3C/svg%3E')",
+                    },
+                    animation: {
+                        'loader-curtain': 'curtainReveal 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards 4.5s',
+                        'reveal-text': 'revealText 1.5s cubic-bezier(0.76, 0, 0.24, 1) forwards',
+                        'scale-in': 'scaleIn 1s cubic-bezier(0.76, 0, 0.24, 1) forwards',
+                        'morphing': 'morphing 10s ease-in-out infinite',
+                        'spin-slow': 'spin 15s linear infinite',
+                        'ping-slow': 'ping 3s cubic-bezier(0, 0, 0.2, 1) infinite',
+                        'float-up': 'floatUp 1s ease-out forwards',
+                        'text-shimmer': 'textShimmer 2.5s ease-out infinite',
+                        'slide-in-left': 'slideInLeft 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'slide-in-right': 'slideInRight 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'slide-in-bottom': 'slideInBottom 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards'
+                    },
+                    keyframes: {
+                        curtainReveal: {
+                            '0%': { clipPath: 'inset(0 0 0 0)' },
+                            '100%': { clipPath: 'inset(0 0 100% 0)' }
+                        },
+                        revealText: {
+                            '0%': { transform: 'translateY(100%)' },
+                            '100%': { transform: 'translateY(0)' }
+                        },
+                        scaleIn: {
+                            '0%': { transform: 'scale(0)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        },
+                        morphing: {
+                            '0%': { borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%' },
+                            '50%': { borderRadius: '30% 60% 70% 40% / 50% 60% 30% 60%' },
+                            '100%': { borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%' }
+                        },
+                        floatUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        textShimmer: {
+                            '0%, 100%': { backgroundPosition: '-100% 0' },
+                            '50%': { backgroundPosition: '200% 0' }
+                        },
+                        slideInLeft: {
+                            '0%': { transform: 'translateX(-100px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(100px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        slideInBottom: {
+                            '0%': { transform: 'translateY(100px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Disable text selection everywhere */
+        * {
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #161022;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #2e2839;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6c2bee;
+        }
+
+        .text-stroke-1 {
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+            color: transparent;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .animate-float-delayed {
+            animation: float 8s ease-in-out infinite 1s;
+        }
+
+        .animate-float-slow {
+            animation: float 10s ease-in-out infinite 2s;
+        }
+
+        #mouse-follower {
+            transition:
+                width 0.2s linear,
+                height 0.2s linear,
+                background 0.2s linear,
+                border 0.2s linear,
+                opacity 0.2s linear;
+        }
+
+
+        #mouse-follower.cursor-expanded #cursor-text {
+            opacity: 1 !important;
+        }
+
+        #mouse-follower.cursor-expanded {
+            width: 120px !important;
+            height: 120px !important;
+        }
+
+
+        body.cursor-hidden {
+            cursor: none !important;
+        }
+
+        body.cursor-hidden * {
+            cursor: none !important;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .animate-marquee {
+            animation: marquee 30s linear infinite;
+        }
+
+        @keyframes track-scroll {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(calc(-100% + 100vw));
+            }
+        }
+
+        @supports (animation-timeline: view()) {
+            .services-scroll-section {
+                height: 300vh;
+                view-timeline-name: --services-scroll;
+                view-timeline-axis: block;
+            }
+
+            .services-sticky-container {
+                position: sticky;
+                top: 0;
+                height: 100vh;
+                width: 100%;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .services-track {
+                width: max-content;
+                animation: track-scroll linear both;
+                animation-timeline: --services-scroll;
+                animation-range: contain 0% contain 100%;
+            }
+        }
+
+        .loader-wrapper {
+            position: fixed;
+            inset: 0;
+            background-color: #0f0b18;
+            z-index: 9999;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .orb-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            filter: url('#goo');
+        }
+
+        .orb {
+            position: absolute;
+            background: radial-gradient(circle at 30% 30%, rgba(108, 43, 238, 0.8), rgba(217, 70, 239, 0.4));
+            border-radius: 50%;
+            mix-blend-mode: screen;
+            filter: blur(10px);
+            opacity: 0.8;
+            animation: orb-move 4s infinite alternate ease-in-out;
+        }
+
+        .orb:nth-child(1) {
+            width: 150px;
+            height: 150px;
+            animation-duration: 3s;
+            background: #6c2bee;
+        }
+
+        .orb:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            animation-duration: 5s;
+            animation-direction: reverse;
+            background: #d946ef;
+            left: 40px;
+        }
+
+        .orb:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            animation-duration: 2.5s;
+            background: #22d3ee;
+            top: 40px;
+        }
+
+        .orb:nth-child(4) {
+            width: 200px;
+            height: 200px;
+            animation: pulse-glow 2s infinite alternate;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+            z-index: -1;
+        }
+
+        @keyframes orb-move {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(30px, -50px) scale(1.1);
+            }
+
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+        }
+
+        @keyframes pulse-glow {
+            from {
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 0.6;
+                transform: scale(1.2);
+            }
+        }
+
+        .loading-progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #6c2bee, #d946ef, #22d3ee);
+            width: 0%;
+            transition: width 0.1s linear;
+            box-shadow: 0 0 20px rgba(217, 70, 239, 0.5);
+        }
+
+        .counter-container {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            color: white;
+            font-size: 8rem;
+            line-height: 0.8;
+            opacity: 0.5;
+            mix-blend-mode: overlay;
+        }
+
+        .typewriter-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            text-align: center;
+        }
+
+        .grid-bg {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+        }
+
+        spline-viewer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.6;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+
+        #threejs-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        #threejs-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        #works-3d-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 256px;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        #works-3d-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .works-3d-visible {
+            opacity: 1 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-background-dark text-white font-display overflow-x-hidden selection:bg-primary selection:text-white">
+    <svg style="position: absolute; width: 0; height: 0;">
+        <filter id="goo">
+            <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="12"></feGaussianBlur>
+            <feColorMatrix in="blur" mode="matrix" result="goo" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7">
+            </feColorMatrix>
+            <feComposite in="SourceGraphic" in2="goo" operator="atop"></feComposite>
+        </filter>
+    </svg>
+    <div class="loader-wrapper animate-loader-curtain" id="preloader">
+        <div class="grid-bg"></div>
+        <div class="orb-container animate-scale-in">
+            <div class="orb"></div>
+            <div class="orb"></div>
+            <div class="orb"></div>
+            <div class="orb"></div>
+        </div>
+        <div class="typewriter-text flex flex-col items-center justify-center gap-0">
+            <div class="overflow-hidden">
+                <h2 class="text-4xl md:text-6xl font-black italic tracking-tighter text-white">
+                    <span class="inline-block" id="loading-text">CREATORS</span><span
+                        class="text-accent-pink inline-block animate-reveal-text">.</span>
+                </h2>
+            </div>
+        </div>
+        <div class="counter-container select-none">
+            <span id="counter">0</span>%
+        </div>
+        <div class="loading-progress-bar" id="progress-bar"></div>
+    </div>
+    <div class="fixed top-0 left-0 size-6 border border-primary bg-primary/20 rounded-full pointer-events-none z-[100] hidden md:flex backdrop-blur-[6px] opacity-0 will-change-transform items-center justify-center"
+        id="mouse-follower">
+        <div id="cursor-text"
+            class="flex items-center gap-2 text-white opacity-0 transition-opacity duration-300 whitespace-nowrap text-[11px] tracking-wide"
+            style="font-family: 'Space Grotesk', sans-serif; font-weight: 600;">
+            <span>View Project</span>
+            <span class="material-symbols-outlined text-[14px] -rotate-45">
+                arrow_forward
+            </span>
+        </div>
+    </div>
+
+    <div class="fixed inset-0 pointer-events-none z-50 bg-grain opacity-40 mix-blend-overlay"></div>
+    <div class="relative flex flex-col min-h-screen">
+        <div class="fixed top-6 left-0 right-0 z-40 flex justify-center px-4">
+            <nav
+                class="flex items-center gap-2 p-2 rounded-full border border-white/10 bg-background-dark/60 backdrop-blur-xl shadow-2xl">
+                <a class="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-white/5 transition-colors" href="#">
+                    <div class="size-5 text-primary">
+                        <svg class="size-full" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                            <path clip-rule="evenodd"
+                                d="M24 4.8L43.2 24L24 43.2L4.8 24L24 4.8ZM24 12L36 24L24 36L12 24L24 12Z"
+                                fill="currentColor" fill-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <span class="font-bold tracking-tight text-sm uppercase">Home</span>
+                </a>
+                <div class="w-px h-6 bg-white/10"></div>
+                <div class="hidden md:flex items-center gap-1">
+                    <a class="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-full transition-all"
+                        href="#">Work</a>
+                    <a class="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-full transition-all"
+                        href="#">Studio</a>
+                    <a class="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-full transition-all"
+                        href="#">Services</a>
+                </div>
+                <div class="w-px h-6 bg-white/10 hidden md:block"></div>
+                <button
+                    class="bg-primary hover:bg-primary/90 text-white text-sm font-bold px-5 py-2.5 rounded-full transition-all flex items-center gap-2 group">
+                    <span>Let's Talk</span>
+                    <span
+                        class="material-symbols-outlined text-[16px] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+                </button>
+            </nav>
+        </div>
+        <main
+            class="sticky top-0 z-0 flex flex-col justify-center items-center h-screen pt-20 pb-10 px-4 overflow-hidden bg-background-dark">
+            <div class="grid-bg"></div>
+            <spline-viewer url="https://prod.spline.design/X6gT-3P4T-J4o-5b/scene.splinecode"></spline-viewer>
+            <div id="threejs-container" class="absolute inset-0 z-0 pointer-events-none"></div>
+            <div
+                class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-float pointer-events-none">
+            </div>
+            <div
+                class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-accent-pink/10 rounded-full blur-[100px] animate-float-delayed pointer-events-none">
+            </div>
+            <div
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent-cyan/5 rounded-full blur-[150px] animate-float-slow pointer-events-none">
+            </div>
+            <div class="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center text-center">
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm mb-8 animate-fade-in-up">
+                    <span class="relative flex h-2 w-2">
+                        <span
+                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                    <span class="text-xs font-mono uppercase tracking-widest text-slate-300">Available for new
+                        projects</span>
+                </div>
+                <h1
+                    class="text-[12vw] md:text-[8vw] font-black leading-[0.9] tracking-tighter text-white uppercase mix-blend-screen relative">
+                    <span id="word-1"
+                        class="block hover:scale-105 transition-transform duration-700 ease-out cursor-default opacity-0">We
+                        Craft</span>
+                    <span id="word-2" class="block relative group opacity-0">
+                        <span
+                            class="absolute inset-0 text-stroke-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-x-2 translate-y-2">Digital</span>
+                        <span
+                            class="relative bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400 group-hover:text-primary transition-colors duration-300">Digital</span>
+                    </span>
+                    <div id="word-3" class="flex items-center justify-center gap-4 flex-wrap opacity-0">
+                        <div
+                            class="relative h-[8vw] w-[14vw] hidden md:block rounded-full overflow-hidden border-2 border-white/10 rotate-[-4deg] hover:rotate-0 transition-transform duration-500 group">
+                            <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                                data-alt="Abstract fluid 3d shapes in purple and blue lighting"
+                                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD6ysYA4UycMARi1G83VvLYQXdlJnJsHaiRd5OzHmv-RX3-7GDmCApc0q1nb6Ju_LJz4KWT7WCIlAflzGJk_QacgSPmwyOM5nemU_ISQ-ZA3ByR3fnT5XLFHk-hsgHZX_ceAyoi5SvJEn0WzmXizgUpl5sAojkeGht-ppIwq8XHdhWLTeONQFnH0jStne6uCxrOzNI09x2CrUDW9Lk35sQ7vbheoBYuiJ5f7CCL_Zo2CmhSdYQRNiDyJKEUHpRUuGwhni2aADnCgAM');">
+                            </div>
+                        </div>
+                        <span class="italic font-serif font-normal text-primary">Magic</span>
+                    </div>
+                </h1>
+                <div class="mt-12 flex flex-col md:flex-row items-center gap-8 max-w-3xl">
+                    <p id="hero-desc"
+                        class="text-slate-400 text-lg md:text-xl font-light leading-relaxed text-center md:text-left max-w-md backdrop-blur-sm p-2 rounded-lg bg-black/10 min-h-[5rem]">
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div id="explore-btn"
+                            class="group relative flex items-center justify-center gap-2 text-xs tracking-widest uppercase text-white/70 opacity-0 transition-all duration-700 cursor-default select-none border border-white/20 w-48 h-12 rounded-full hover:bg-white/5 hover:border-white/40 overflow-hidden">
+                            <div
+                                class="absolute inset-0 flex items-center justify-center gap-2 transition-transform duration-500 group-hover:-translate-y-full">
+                                <span>Explore Work</span>
+                                <span class="material-symbols-outlined text-base text-primary">arrow_downward</span>
+                            </div>
+                            <div
+                                class="absolute inset-0 flex items-center justify-center gap-2 transition-transform duration-500 translate-y-full group-hover:translate-y-0">
+                                <span>Scroll</span>
+                                <span class="material-symbols-outlined text-base text-primary">mouse</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <div class="relative z-10 bg-background-dark shadow-[0_-50px_100px_-20px_rgba(0,0,0,0.5)] rounded-t-[2.5rem]">
+            <section id="selected-works-section"
+                class="py-24 px-6 md:px-12 max-w-[1600px] mx-auto w-full z-10 relative">
+                <div id="works-3d-container"
+                    class="absolute top-0 left-0 w-full h-64 pointer-events-none opacity-0 transition-opacity duration-1000 z-0">
+                </div>
+                <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6 relative z-10">
+                    <div class="relative">
+                        <h2 class="text-4xl md:text-6xl font-bold">Selected Works</h2>
+                        <p class="text-slate-400 max-w-sm">A curated selection of projects where we pushed boundaries
+                            and created lasting impact.</p>
+                    </div>
+                    <a class="group flex items-center gap-2 text-white hover:text-primary transition-colors border-b border-transparent hover:border-primary pb-1"
+                        href="#">
+                        See All Projects
+                        <span
+                            class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                    </a>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                    <div class="group cursor-pointer project-card" data-project="1">
+                        <div class="relative aspect-[4/3] rounded-2xl overflow-hidden mb-6">
+                            <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10">
+                            </div>
+                            <img alt="Modern minimalistic furniture design website mockup on a laptop"
+                                class="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-700"
+                                data-alt="Modern minimalistic furniture design website mockup"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBq2SWSlFL-sMcPJkZ87nKAJK1bzNx7wdf6cs311xRPa5EhGBnCJgUcBEX2sydqWNqIzWqOWzxgRB6hSfqi0OyzHLxpI3Gz9-bmjfF1R4X35yAFP7qyifIJrzqQ59nMYhgpDOJ9H91-9reywd6H-hGuEkinoExA0iYszZPHhbW0H9UGJW5IyhrmFsDkdyT2Q8NZWT2AN8CmWfwhw32pcyF1q4JYYEP3-aRLiNHYl31A_flI0RRF_V0-CbVMPcJlhe43BPclkBJ7fWY" />
+                            <div
+                                class="absolute top-4 right-4 z-20 bg-[#161022] backdrop-blur-md px-3 py-1 rounded-full text-xs font-mono border border-white/20 opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0">
+                                2023
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-2xl font-bold group-hover:text-primary transition-colors">Project Name
+                                </h3>
+                                <p class="text-slate-400 mt-1">Services</p>
+                            </div>
+                            <div
+                                class="size-10 rounded-full border border-white/10 flex items-center justify-center text-white/50 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all">
+                                <span
+                                    class="material-symbols-outlined text-lg -rotate-45 group-hover:rotate-0 transition-transform">arrow_forward</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="group cursor-pointer md:mt-24 project-card" data-project="2">
+                        <div class="relative aspect-[4/3] rounded-2xl overflow-hidden mb-6">
+                            <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10">
+                            </div>
+                            <img alt="Futuristic data visualization dashboard interface with neon colors"
+                                class="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-700"
+                                data-alt="Futuristic data visualization dashboard interface"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtQh5APHcxV3h-vT7nZ4nyBxbM5AKHwidbLJ-3IogaE_7Gb4NWcul_mOcYBmHkDG6igjOk7OCBQNp93Hjh2_qrK0J8mudGIB_6I4QjGi9GjY_C6lzs5rauK-fzxJJm3vDlR9bQcJKEVf-vXJq9qHzYXk-x9XpRBqz5obxsvih6lVtYnWDYk5R3qObePHORTLkEB2iudPRh1q4PsTZlh2Gp5aF87yWGPoZSK0xC7kT_WRWK3zG2Wqrmp-uLv6a6c-53SE_PdkHZzpg" />
+                            <div
+                                class="absolute top-4 right-4 z-20 bg-[#161022] backdrop-blur-md px-3 py-1 rounded-full text-xs font-mono border border-white/20 opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0">
+                                2024
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-2xl font-bold group-hover:text-primary transition-colors">Project Name
+                                </h3>
+                                <p class="text-slate-400 mt-1">Services</p>
+                            </div>
+                            <div
+                                class="size-10 rounded-full border border-white/10 flex items-center justify-center text-white/50 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all">
+                                <span
+                                    class="material-symbols-outlined text-lg -rotate-45 group-hover:rotate-0 transition-transform">arrow_forward</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="relative z-10 border-t border-white/5 bg-background-dark services-scroll-section">
+                <div class="services-sticky-container flex flex-col overflow-hidden">
+                    <div class="w-full max-w-[1600px] mx-auto px-6 md:px-12 pt-12 md:pt-16 pb-8 z-20">
+                        <h2 class="text-4xl md:text-6xl font-bold">Our Expertise</h2>
+                    </div>
+                    <div
+                        class="flex-1 w-full min-w-0 flex items-center overflow-x-auto md:overflow-visible no-scrollbar">
+                        <div class="services-track flex gap-8 w-max px-6 md:px-12 pb-12 md:pb-0">
+                            <div
+                                class="relative flex-none w-[85vw] md:w-[500px] bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 flex flex-col justify-between group hover:bg-white/10 transition-colors duration-500 overflow-hidden">
+                                <div
+                                    class="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/30 transition-all duration-700 pointer-events-none">
+                                </div>
+                                <div class="relative z-10">
+                                    <div
+                                        class="size-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-primary mb-10 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+                                        <span class="material-symbols-outlined text-4xl">design_services</span>
+                                    </div>
+                                    <h3 class="text-3xl font-bold mb-4 text-white">UI/UX Design</h3>
+                                    <p class="text-slate-400 leading-relaxed mb-8">Creating intuitive, user-centric
+                                        interfaces that delight users and drive engagement through research-backed
+                                        design systems.</p>
+                                </div>
+                                <div class="relative z-10 border-t border-white/10 pt-6">
+                                    <ul class="flex flex-wrap gap-3">
+                                        <li
+                                            class="px-3 py-1 rounded-full bg-white/5 text-xs font-medium text-slate-300 border border-white/5">
+                                            Prototyping</li>
+                                        <li
+                                            class="px-3 py-1 rounded-full bg-white/5 text-xs font-medium text-slate-300 border border-white/5">
+                                            Wireframing</li>
+                                        <li
+                                            class="px-3 py-1 rounded-full bg-white/5 text-xs font-medium text-slate-300 border border-white/5">
+                                            Design Systems</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div
+                                class="relative flex-none w-[85vw] md:w-[500px] bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 flex flex-col justify-between group hover:bg-white/10 transition-colors duration-500 overflow-hidden">
+                                <div
+                                    class="absolute top-0 right-0 w-64 h-64 bg-accent-pink/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover:bg-accent-pink/30 transition-all duration-700 pointer-events-none">
+                                </div>
+                                <div class="relative z-10">
+                                    <div
+                                        class="size-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-accent-pink mb-10 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300">
+                                        <span class="material-symbols-outlined text-4xl">code</span>
+                                    </div>
+                                    <h3 class="text-3xl font-bold mb-4 text-white">Development</h3>
+                                    <p class="text-slate-400 leading-relaxed mb-8">Robust frontend and backend
+                                        engineering. We build scalable, high-performance web applications using modern
+                                        technologies.</p>
+                                </div>
+                                <div class="relative z-10 border-t border-white/10 pt-6">
+                                    <ul class="flex flex-wrap gap-3">
+                                        <li
+                                            class="px-3 py-1 rounded-full bg-white/5 text-xs font-medium text-slate-300 border border-white/5">
+                                            React/Next.js</li>
+                                        <li
+                                            class="px-3 py-1 rounded-full bg-white/5 text-xs font-medium text-slate-300 border border-white/5">
+                                            Node.js</li>
+                                        <li
+                                            class="px-3 py-1 rounded-full bg-white/5 text-xs font-medium text-slate-300 border border-white/5">
+                                            CMS Integration</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div
+                                class="relative flex-none w-[85vw] md:w-[500px] bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 flex flex-col justify-between group hover:bg-white/10 transition-colors duration-500 overflow-hidden">
+                                <div
+                                    class="absolute top-0 right-0 w-64 h-64 bg-accent-cyan/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover:bg-accent-cyan/30 transition-all duration-700 pointer-events-none">
+                                </div>
+                                <div class="relative z-10">
+                                    <div
+                                        class="size-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-accent-cyan mb-10 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+                                        <span class="material-symbols-outlined text-4xl">rocket_launch</span>
+                                    </div>
+                                    <h3 class="text-3xl font-bold mb-4 text-white">Brand Strategy</h3>
+                                    <p class="text-slate-400 leading-relaxed mb-8">Defining your voice and positioning
+                                        in the market. We create comprehensive brand strategies that resonate with your
+                                        audience.</p>
+                                </div>
+                                <div class="relative z-10 border-t border-white/10 pt-6">
+                                    <ul class="flex flex-wrap gap-3">
+                                        <li
+                                            class="px-3 py-1 rounded-full bg-white/5 text-xs font-medium text-slate-300 border border-white/5">
+                                            Identity</li>
+                                        <li
+                                            class="px-3 py-1 rounded-full bg-white/5 text-xs font-medium text-slate-300 border border-white/5">
+                                            Positioning</li>
+                                        <li
+                                            class="px-3 py-1 rounded-full bg-white/5 text-xs font-medium text-slate-300 border border-white/5">
+                                            Guidelines</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div
+                                class="relative flex-none w-[85vw] md:w-[500px] bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 flex flex-col justify-between group hover:bg-white/10 transition-colors duration-500 overflow-hidden">
+                                <div
+                                    class="absolute top-0 right-0 w-64 h-64 bg-purple-500/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover:bg-purple-500/30 transition-all duration-700 pointer-events-none">
+                                </div>
+                                <div class="relative z-10">
+                                    <div
+                                        class="size-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-purple-400 mb-10 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300">
+                                        <span class="material-symbols-outlined text-4xl">movie_filter</span>
+                                    </div>
+                                    <h3 class="text-3xl font-bold mb-4 text-white">Marketing</h3>
+                                    <p class="text-slate-400 leading-relaxed mb-8">Amplifying your brand through
+                                        data-driven campaigns, SEO, social media, and content that converts audiences
+                                        into loyal customers.</p>
+                                </div>
+                                <div class="relative z-10 border-t border-white/10 pt-6">
+                                    <ul class="flex flex-wrap gap-3">
+                                        <li
+                                            class="px-3 py-1 rounded-full bg-white/5 text-xs font-medium text-slate-300 border border-white/5">
+                                            Meta Adds</li>
+                                        <li
+                                            class="px-3 py-1 rounded-full bg-white/5 text-xs font-medium text-slate-300 border border-white/5">
+                                            Google Adds</li>
+                                        <li
+                                            class="px-3 py-1 rounded-full bg-white/5 text-xs font-medium text-slate-300 border border-white/5">
+                                            Content Marketing</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="w-full bg-background-dark border-t border-white/5 py-12 overflow-hidden relative z-10">
+                <div class="flex whitespace-nowrap w-max animate-marquee group hover:[animation-play-state:paused]">
+                    <div class="flex items-center gap-16 px-8">
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Build</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Create</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Elevate</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Refine</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Dominate</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Define</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Execute</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Deliver</span>
+                    </div>
+                    <div class="flex items-center gap-16 px-8">
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Build</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Create</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Elevate</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Refine</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Dominate</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Define</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Execute</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Deliver</span>
+                    </div>
+                    <div class="flex items-center gap-16 px-8">
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Build</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Create</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Elevate</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Refine</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Dominate</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Define</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Execute</span>
+                        <span
+                            class="text-xl md:text-2xl font-bold text-white/30 hover:text-primary transition-colors cursor-default">Deliver</span>
+                    </div>
+                </div>
+            </div>
+            <footer class="mt-auto border-t border-white/5 bg-[#0f0b18]">
+                <div class="max-w-[1600px] mx-auto px-6 md:px-12 py-2 md:py-4">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-10">
+                        <div>
+                            <h4
+                                class="text-8xl md:text-9xl font-black text-white/5 select-none leading-none -ml-2 md:-ml-4">
+                                Digitization</h4>
+                        </div>
+                        <div class="flex flex-col gap-6 text-right">
+                            <div class="flex gap-4 items-center justify-end">
+                                <span class="text-sm text-slate-500">@ 2026</span>
+                                <a class="size-10 flex items-center justify-center rounded-full bg-white/5 text-slate-400 hover:bg-primary hover:text-white transition-all"
+                                    href="#">
+                                    <i class="ri-instagram-line text-lg"></i>
+                                </a>
+                                <a class="size-10 flex items-center justify-center rounded-full bg-white/5 text-slate-400 hover:bg-primary hover:text-white transition-all"
+                                    href="#">
+                                    <i class="ri-linkedin-line text-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+        <script>
+            const cursor = document.getElementById('mouse-follower');
+            const counterElement = document.getElementById('counter');
+            const progressBar = document.getElementById('progress-bar');
+            const loadingText = document.getElementById('loading-text');
+            let mouseX = 0;
+            let mouseY = 0;
+            let cursorX = 0;
+            let cursorY = 0;
+            // Simulate loading progress
+            let count = 0;
+            const interval = setInterval(() => {
+                count++;
+                if (counterElement) counterElement.innerText = count;
+                if (progressBar) progressBar.style.width = count + "%";
+                // Update words based on percentage
+                if (loadingText) {
+                    if (count < 28) loadingText.innerText = "CREATORS";
+                    else if (count < 56) loadingText.innerText = "BUILDERS";
+                    else if (count < 85) loadingText.innerText = "DREAMERS";
+                    else loadingText.innerText = "AGENCY";
+                }
+                if (count >= 100) {
+                    clearInterval(interval);
+                    // Start fast spin - extreme speed
+                    targetSpeedX = 2.8;
+                    targetSpeedY = 3.0;
+                    setTimeout(triggerRevealAnimations, 150);
+                }
+            }, 35); // Adjusted speed for the new effect
+
+            function triggerRevealAnimations() {
+                const word1 = document.getElementById('word-1');
+                const word2 = document.getElementById('word-2');
+                const word3 = document.getElementById('word-3');
+                const heroDesc = document.getElementById('hero-desc');
+
+                setTimeout(() => {
+                    if (word1) word1.classList.add('animate-slide-in-left');
+                }, 1800);
+
+                setTimeout(() => {
+                    if (word2) word2.classList.add('animate-slide-in-right');
+                }, 2000);
+
+                setTimeout(() => {
+                    if (word3) word3.classList.add('animate-slide-in-bottom');
+                }, 2500);
+
+                // Slow down spinning smoothly after words are revealed
+                setTimeout(() => {
+                    targetSpeedX = 0.0003;
+                    targetSpeedY = 0.0005;
+                }, 900);
+
+                // Trigger typing animation after words reveal
+                setTimeout(() => {
+                    const text = "A studio blending art, code, and strategy to build immersive digital experiences for forward-thinking brands.";
+                    typeWriter(heroDesc, text, 15, () => {
+                        const exploreBtn = document.getElementById('explore-btn');
+                        if (exploreBtn) exploreBtn.classList.remove('opacity-0');
+                    });
+                }, 900);
+            }
+
+            function typeWriter(element, text, speed, onComplete) {
+                if (!element) return;
+                let i = 0;
+                function type() {
+                    if (i < text.length) {
+                        element.innerHTML += text.charAt(i);
+                        i++;
+                        setTimeout(type, speed);
+                    } else if (onComplete) {
+                        onComplete();
+                    }
+                }
+                type();
+            }
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                // Show cursor when moving
+                if (cursor) cursor.style.opacity = '1';
+            });
+            // Smooth follow
+            function animateCursor() {
+                if (!cursor) return;
+                const speed = 0.15; // Delay factor
+                cursorX += (mouseX - cursorX) * speed;
+                cursorY += (mouseY - cursorY) * speed;
+                // Translate -50% -50% to center the 24px circle on the cursor tip point
+                cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
+                requestAnimationFrame(animateCursor);
+            }
+            animateCursor();
+
+            // Project image hover cursor effect
+            function setupProjectImageHover() {
+                // Find project images
+                const projectImages = document.querySelectorAll('.project-card img');
+
+                projectImages.forEach((img) => {
+                    img.addEventListener('mouseenter', (e) => {
+                        e.stopPropagation();
+                        if (cursor) {
+                            cursor.classList.add('cursor-expanded');
+                            document.body.classList.add('cursor-hidden');
+                        }
+                    });
+
+                    img.addEventListener('mouseleave', (e) => {
+                        e.stopPropagation();
+                        if (cursor) {
+                            cursor.classList.remove('cursor-expanded');
+                            document.body.classList.remove('cursor-hidden');
+                        }
+                    });
+                });
+
+                // Also attach to the image container divs for better detection
+                const imageContainers = document.querySelectorAll('.project-card .relative');
+                imageContainers.forEach((container) => {
+                    container.addEventListener('mouseenter', () => {
+                        if (cursor) {
+                            cursor.classList.add('cursor-expanded');
+                            document.body.classList.add('cursor-hidden');
+                        }
+                    });
+
+                    container.addEventListener('mouseleave', () => {
+                        if (cursor) {
+                            cursor.classList.remove('cursor-expanded');
+                            document.body.classList.remove('cursor-hidden');
+                        }
+                    });
+                });
+            }
+
+            // Setup project image hover - try multiple times to ensure elements exist
+            function initProjectHover() {
+                if (document.querySelectorAll('.project-card').length > 0) {
+                    setupProjectImageHover();
+                } else {
+                    // Retry if elements not ready yet
+                    setTimeout(initProjectHover, 200);
+                }
+            }
+
+            // Setup after DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initProjectHover);
+            } else {
+                initProjectHover();
+            }
+
+            // Also try on window load as backup
+            window.addEventListener('load', () => {
+                setTimeout(initProjectHover, 300);
+            });
+
+            // Three.js 3D Model Setup
+            let scene, camera, renderer, model;
+            let modelMouseX = 0, modelMouseY = 0;
+            let targetMouseX = 0, targetMouseY = 0;
+            let windowHalfX = window.innerWidth / 2;
+            let windowHalfY = window.innerHeight / 2;
+            let baseRotationX = 0, baseRotationY = 0;
+            // Smooth rotation speed control
+            let rotationSpeedX = 0.0003;
+            let rotationSpeedY = 0.0005;
+            let targetSpeedX = 0.0003;
+            let targetSpeedY = 0.0005;
+
+            function initThreeJS() {
+                const container = document.getElementById('threejs-container');
+                if (!container) return;
+
+                // Scene setup
+                scene = new THREE.Scene();
+                camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                camera.position.z = 5;
+
+                // Renderer setup
+                renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(window.devicePixelRatio);
+                container.appendChild(renderer.domElement);
+
+                // Lighting
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+                scene.add(ambientLight);
+
+                const pointLight1 = new THREE.PointLight(0x6c2bee, 1, 100);
+                pointLight1.position.set(5, 5, 5);
+                scene.add(pointLight1);
+
+                const pointLight2 = new THREE.PointLight(0xd946ef, 1, 100);
+                pointLight2.position.set(-5, -5, 5);
+                scene.add(pointLight2);
+
+                const pointLight3 = new THREE.PointLight(0x22d3ee, 1, 100);
+                pointLight3.position.set(0, 5, -5);
+                scene.add(pointLight3);
+
+                // Create a geometric 3D model (Torus Knot)
+                const geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
+                const material = new THREE.MeshStandardMaterial({
+                    color: 0xffffff,
+                    metalness: 0.7,
+                    roughness: 0.3,
+                    emissive: 0x6c2bee,
+                    emissiveIntensity: 0.2
+                });
+                model = new THREE.Mesh(geometry, material);
+                model.scale.set(1.5, 1.5, 1.5);
+                scene.add(model);
+
+                // Add additional decorative elements
+                for (let i = 0; i < 20; i++) {
+                    const particleGeometry = new THREE.SphereGeometry(0.05, 8, 8);
+                    const particleMaterial = new THREE.MeshBasicMaterial({
+                        color: new THREE.Color().setHSL(Math.random(), 0.7, 0.5),
+                        transparent: true,
+                        opacity: 0.6
+                    });
+                    const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+                    particle.position.set(
+                        (Math.random() - 0.5) * 10,
+                        (Math.random() - 0.5) * 10,
+                        (Math.random() - 0.5) * 10
+                    );
+                    scene.add(particle);
+                }
+
+                // Mouse movement tracking
+                document.addEventListener('mousemove', onMouseMove, false);
+                window.addEventListener('resize', onWindowResize, false);
+
+                animate();
+            }
+
+            function onMouseMove(event) {
+                targetMouseX = (event.clientX - windowHalfX) * 0.002;
+                targetMouseY = (event.clientY - windowHalfY) * 0.002;
+            }
+
+            function onWindowResize() {
+                windowHalfX = window.innerWidth / 2;
+                windowHalfY = window.innerHeight / 2;
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+
+                if (model) {
+                    // Smoothly interpolate current speed towards target speed
+                    rotationSpeedX += (targetSpeedX - rotationSpeedX) * 0.05;
+                    rotationSpeedY += (targetSpeedY - rotationSpeedY) * 0.05;
+
+                    // Apply rotation speed
+                    baseRotationX += rotationSpeedX;
+                    baseRotationY += rotationSpeedY;
+
+                    // Smoothly interpolate mouse rotation towards target
+                    modelMouseX += (targetMouseX - modelMouseX) * 0.1;
+                    modelMouseY += (targetMouseY - modelMouseY) * 0.1;
+
+                    // Apply base rotation + mouse offset
+                    model.rotation.x = baseRotationX + modelMouseY * 0.5;
+                    model.rotation.y = baseRotationY + modelMouseX * 0.5;
+                }
+
+                // Animate particles
+                scene.children.forEach((child) => {
+                    if (child instanceof THREE.Mesh && child.geometry instanceof THREE.SphereGeometry && child !== model) {
+                        child.rotation.x += 0.001;
+                        child.rotation.y += 0.001;
+                    }
+                });
+
+                renderer.render(scene, camera);
+            }
+
+            // Initialize Three.js after page load
+            window.addEventListener('load', () => {
+                setTimeout(initThreeJS, 100);
+            });
+
+            // Selected Works 3D Model Setup
+            let worksScene, worksCamera, worksRenderer, worksModel;
+            let worksModelVisible = false;
+            let worksModelInitialY = -3; // Start off-screen below
+            let targetModelX = -2, targetModelY = 0, targetModelZ = 0; // Position near text
+            let targetModelScale = 0.6;
+            let worksParticles = [];
+            let particleInitialPositions = []; // Store initial positions of particles
+
+            function initWorksThreeJS() {
+                const container = document.getElementById('works-3d-container');
+                if (!container) return;
+
+                // Scene setup
+                worksScene = new THREE.Scene();
+                worksCamera = new THREE.PerspectiveCamera(50, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+                worksCamera.position.set(0, 0, 5);
+
+                // Renderer setup
+                worksRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+                worksRenderer.setSize(container.offsetWidth, container.offsetHeight);
+                worksRenderer.setPixelRatio(window.devicePixelRatio);
+                container.appendChild(worksRenderer.domElement);
+
+                // Lighting
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+                worksScene.add(ambientLight);
+
+                const pointLight1 = new THREE.PointLight(0x6c2bee, 1.5, 50);
+                pointLight1.position.set(5, 5, 5);
+                worksScene.add(pointLight1);
+
+                const pointLight2 = new THREE.PointLight(0xd946ef, 1.5, 50);
+                pointLight2.position.set(-5, -5, 5);
+                worksScene.add(pointLight2);
+
+                // Create a torus knot model (matching landing page style)
+                const geometry = new THREE.TorusKnotGeometry(0.4, 0.12, 100, 16);
+                const material = new THREE.MeshStandardMaterial({
+                    color: 0xffffff,
+                    metalness: 0.7,
+                    roughness: 0.3,
+                    emissive: 0x6c2bee,
+                    emissiveIntensity: 0.2
+                });
+                worksModel = new THREE.Mesh(geometry, material);
+                worksModel.position.set(-2, worksModelInitialY, 0); // Start below, positioned near text
+                worksModel.scale.set(0.6, 0.6, 0.6); // Make it smaller
+                worksScene.add(worksModel);
+
+                // Add decorative particles like landing page
+                for (let i = 0; i < 10; i++) {
+                    const particleGeometry = new THREE.SphereGeometry(0.03, 8, 8);
+                    const particleMaterial = new THREE.MeshBasicMaterial({
+                        color: new THREE.Color().setHSL(Math.random(), 0.7, 0.5),
+                        transparent: true,
+                        opacity: 0.6
+                    });
+                    const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+                    const initialX = -2 + (Math.random() - 0.5) * 3;
+                    const initialY = (Math.random() - 0.5) * 2; // Relative to model's final Y position
+                    const initialZ = (Math.random() - 0.5) * 3;
+
+                    particle.position.set(
+                        initialX,
+                        worksModelInitialY + initialY,
+                        initialZ
+                    );
+                    worksScene.add(particle);
+                    worksParticles.push(particle);
+                    // Store initial position relative to model's target Y (0)
+                    particleInitialPositions.push({
+                        x: initialX,
+                        y: initialY, // This is relative to model's Y position
+                        z: initialZ
+                    });
+                }
+
+                // Handle resize
+                window.addEventListener('resize', onWorksWindowResize, false);
+
+                // Start animation
+                animateWorks();
+            }
+
+            function onWorksWindowResize() {
+                const container = document.getElementById('works-3d-container');
+                if (!container || !worksCamera || !worksRenderer) return;
+                worksCamera.aspect = container.offsetWidth / container.offsetHeight;
+                worksCamera.updateProjectionMatrix();
+                worksRenderer.setSize(container.offsetWidth, container.offsetHeight);
+            }
+
+            function animateWorks() {
+                requestAnimationFrame(animateWorks);
+
+                if (worksModel && worksModelVisible) {
+                    // Constant base rotation (matching landing page style)
+                    let baseRotationX = 0;
+                    let baseRotationY = 0;
+                    baseRotationX += 0.0003;
+                    baseRotationY += 0.0005;
+
+                    worksModel.rotation.x += 0.0003;
+                    worksModel.rotation.y += 0.0005;
+
+                    // Animate particles
+                    worksParticles.forEach((particle) => {
+                        particle.rotation.x += 0.01;
+                        particle.rotation.y += 0.01;
+                    });
+
+                    // Smooth entrance animation - move from below to target position
+                    worksModel.position.y += (targetModelY - worksModel.position.y) * 0.05;
+
+                    // Smooth interpolation for position and scale
+                    worksModel.position.x += (targetModelX - worksModel.position.x) * 0.1;
+                    worksModel.position.z += (targetModelZ - worksModel.position.z) * 0.1;
+                    const currentScale = worksModel.scale.x;
+                    const newScale = currentScale + (targetModelScale - currentScale) * 0.1;
+                    worksModel.scale.set(newScale, newScale, newScale);
+
+                    // Update particles to follow model's position smoothly
+                    // Particles should maintain their relative positions to the model
+                    worksParticles.forEach((particle, index) => {
+                        if (particleInitialPositions[index]) {
+                            const targetParticleX = targetModelX + particleInitialPositions[index].x;
+                            const targetParticleY = worksModel.position.y + particleInitialPositions[index].y;
+                            const targetParticleZ = targetModelZ + particleInitialPositions[index].z;
+
+                            // Smoothly interpolate to target position
+                            particle.position.x += (targetParticleX - particle.position.x) * 0.1;
+                            particle.position.y += (targetParticleY - particle.position.y) * 0.1;
+                            particle.position.z += (targetParticleZ - particle.position.z) * 0.1;
+                        }
+                    });
+                }
+
+                if (worksRenderer && worksScene && worksCamera) {
+                    worksRenderer.render(worksScene, worksCamera);
+                }
+            }
+
+            // Scroll-triggered reveal - appears when section is 1/4 visible
+            function handleWorksScroll() {
+                const worksSection = document.getElementById('selected-works-section');
+                if (!worksSection) return;
+
+                const rect = worksSection.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+
+                // Trigger when section is 1/4 visible (when top is at 3/4 of window height)
+                const sectionTop = rect.top;
+                const triggerPoint = windowHeight * 0.75; // 3/4 of window height
+
+                const container = document.getElementById('works-3d-container');
+                if (container && sectionTop <= triggerPoint && sectionTop > -rect.height * 0.5) {
+                    container.classList.add('works-3d-visible');
+                    worksModelVisible = true;
+
+                    // Keep model positioned near text (left side)
+                    if (worksModel && !hoveredProject) {
+                        targetModelX = -2; // Stay near text
+                        targetModelY = 0;
+                        targetModelZ = 0;
+                    }
+                } else if (container) {
+                    container.classList.remove('works-3d-visible');
+                    worksModelVisible = false;
+                }
+            }
+
+            // Initialize works 3D model
+            window.addEventListener('load', () => {
+                setTimeout(initWorksThreeJS, 200);
+            });
+
+            // Scroll listener for reveal animation
+            window.addEventListener('scroll', handleWorksScroll);
+            handleWorksScroll(); // Check on load
+
+            // Project hover interactions - subtle scale changes
+            let hoveredProject = null;
+
+            function setupProjectInteractions() {
+                const projectCards = document.querySelectorAll('.project-card');
+
+                projectCards.forEach((card, index) => {
+                    card.addEventListener('mouseenter', () => {
+                        hoveredProject = index;
+                        // Slight scale increase when hovering projects
+                        targetModelScale = 0.7;
+                    });
+
+                    card.addEventListener('mouseleave', () => {
+                        hoveredProject = null;
+                        // Return to normal size
+                        targetModelScale = 0.6;
+                    });
+                });
+
+                // Text hover interaction - model slightly moves up and scales
+                const worksTitle = document.querySelector('#selected-works-section h2');
+                if (worksTitle) {
+                    worksTitle.addEventListener('mouseenter', () => {
+                        targetModelY = 0.3;
+                        targetModelScale = 0.75;
+                    });
+
+                    worksTitle.addEventListener('mouseleave', () => {
+                        if (!hoveredProject) {
+                            targetModelY = 0;
+                            targetModelScale = 0.6;
+                        }
+                    });
+                }
+            }
+
+
+            // Setup interactions after DOM is ready
+            window.addEventListener('load', () => {
+                setTimeout(setupProjectInteractions, 500);
+            });
+        </script>
+    </div>
+</body>
+</html>
